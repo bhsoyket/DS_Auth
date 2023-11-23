@@ -1,10 +1,10 @@
 import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  await app.listen(3000);
-  Logger.log('App Run on Port 3000');
+  await app.listen(process.env.APP_PORT||3000);
+  // console.log("process.env.DB_HOST",process.env.DB_HOST)
+  Logger.log(`App Run on Port ${process.env.APP_PORT}`);
 }
 bootstrap();
