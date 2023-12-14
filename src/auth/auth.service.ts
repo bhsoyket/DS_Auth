@@ -1,11 +1,19 @@
-import { Injectable } from '@nestjs/common';
-import { CreateAuthDto } from './dto/create-auth.dto';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { UserService } from './../user/user.service';
 import { UpdateAuthDto } from './dto/update-auth.dto';
 
 @Injectable()
 export class AuthService {
-  create(createAuthDto: CreateAuthDto) {
-    return 'This action adds a new auth';
+  constructor(private userService: UserService) { }
+  async login(user_name: string, pass: string): Promise<any> {
+    const user = await this.userService.findOneByUsername(user_name);
+    if (user?.password !== pass) {
+      throw new UnauthorizedException();
+    }
+    const { password, ...result } = user;
+    // TODO: Generate a JWT and return it here
+    // instead of the user object
+    return result;
   }
 
   findAll() {

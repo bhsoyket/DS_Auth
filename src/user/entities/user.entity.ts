@@ -16,22 +16,27 @@ export class User {
   last_name: string;
 
   @Column({
+    length: 50, nullable: true
+  })
+  user_name: string;
+
+  @Column({
     length: 20,
   })
   phone: string;
 
-  @Column({nullable:true})
+  @Column({ nullable: true })
   date_of_birth: string;
 
-  @Column({nullable:true})
+  @Column({ nullable: true })
   password: string;
 
-  @Column({nullable:true})
+  @Column({ nullable: true })
   address: string;
 
-  @Column({nullable:true})
+  @Column({ nullable: true })
   status: string;
 
-  @Column({nullable:true})
+  @Column({ nullable: true })
   email: string;
 }

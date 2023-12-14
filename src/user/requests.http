@@ -2,9 +2,12 @@
 
 POST http://localhost:5000/user
 Content-Type: application/json
+
 {
     "first_name": "ruhul",
     "last_name": "amin",
+    "user_name": "admin",
+    "password": "123456",
     "phone": "0169875893"
 }
 ###get all user
@@ -15,3 +18,12 @@ GET http://localhost:5000/user/1
 
 ###Delete a user
 DELETE  http://localhost:5000/user/1
+
+###Login a user
+POST http://localhost:5000/auth/login
+Content-Type: application/json
+
+{
+    "user_name": "admin",
+    "password": "123456"
+}
