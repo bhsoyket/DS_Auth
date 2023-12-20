@@ -13,19 +13,26 @@ export class AuthService {
     private jwtService: JwtService,
   ) { }
   async login(user_name: string, pass: string): Promise<any> {
-    const user = await this.userService.findOneByUsername(user_name);
-    if (!user) {
-      throw new NotFoundException('Invalid Username Or Password!');
+    try {
+      const user = await this.userService.findOneByUsername(user_name);
+      if (!user) {
+        throw new NotFoundException('Invalid Username Or Password!');
+      }
+
+      const passCompare = await bcrypt.compare(pass, user.password);
+      if (
+        !user ||
+        !passCompare
+      ) {
+        throw new NotFoundException('Invalid Username Or Password!');
+      }
+
+      const { password, ...data } = user;
+      const token = this.jwtService.sign(data);
+      return { ...data, token };
+    } catch (error) {
+      console.error(error);
     }
-    if (
-      !user ||
-      !(await bcrypt.compare(pass, user.password))
-    ) {
-      throw new NotFoundException('Invalid Username Or Password!');
-    }
-    const { password, ...data } = user;
-    const token = this.jwtService.sign(data);
-    return { ...data, token };
   }
 
   findAll() {
