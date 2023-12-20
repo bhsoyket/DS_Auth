@@ -1,19 +1,31 @@
+import { NotFoundException } from '@nestjs/common';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UserService } from './../user/user.service';
 import { UpdateAuthDto } from './dto/update-auth.dto';
+import { JwtService } from '@nestjs/jwt';
+import * as bcrypt from 'bcrypt';
+
 
 @Injectable()
 export class AuthService {
-  constructor(private userService: UserService) { }
+  constructor(
+    private userService: UserService,
+    private jwtService: JwtService,
+  ) { }
   async login(user_name: string, pass: string): Promise<any> {
     const user = await this.userService.findOneByUsername(user_name);
-    if (user?.password !== pass) {
-      throw new UnauthorizedException();
+    if (!user) {
+      throw new NotFoundException('Invalid Username Or Password!');
     }
-    const { password, ...result } = user;
-    // TODO: Generate a JWT and return it here
-    // instead of the user object
-    return result;
+    if (
+      !user ||
+      !(await bcrypt.compare(pass, user.password))
+    ) {
+      throw new NotFoundException('Invalid Username Or Password!');
+    }
+    const { password, ...data } = user;
+    const token = this.jwtService.sign(data);
+    return { ...data, token };
   }
 
   findAll() {
